@@ -114,4 +114,15 @@ class Monitor
 
         return $this;
     }
+
+    public function toArray(): array
+    {
+        return [
+            'id' => $this->id,
+            'name' => $this->name,
+            'email' => $this->email,
+            'phone' => $this->phone,
+            'photo' => $this->photo,
+        ];
+    }
 }
