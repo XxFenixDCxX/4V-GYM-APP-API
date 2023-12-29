@@ -35,7 +35,7 @@ class MonitorController extends AbstractController
         $entityManager->persist($monitor);
         $entityManager->flush();
 
-        return $this->getAll($entityManager);
+        return $this->json($monitor->toArray());
     }
     
     #[Route('/monitors/{id}', name: 'update_monitor', methods: ['PUT'])]
