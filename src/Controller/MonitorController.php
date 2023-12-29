@@ -8,9 +8,17 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Entity\Monitor;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class MonitorController extends AbstractController
 {
+    private $validator;
+
+    public function __construct(ValidatorInterface $validator)
+    {
+        $this->validator = $validator;
+    }
+
     #[Route('/monitors', name: 'get_monitors', methods: ['GET'])]
     public function getAll(EntityManagerInterface $entityManager): JsonResponse
     {
@@ -31,6 +39,16 @@ class MonitorController extends AbstractController
         $monitor->setEmail($data['email']);
         $monitor->setPhone($data['phone']);
         $monitor->setPhoto($data['photo']);
+
+        $errors = $this->validator->validate($monitor);
+
+        if (count($errors) > 0) {
+            $errorMessages = [];
+            foreach ($errors as $error) {
+                $errorMessages[] = $error->getMessage();
+            }
+            return $this->json(['errors' => $errorMessages], 400);
+        }
 
         $entityManager->persist($monitor);
         $entityManager->flush();
@@ -54,7 +72,15 @@ class MonitorController extends AbstractController
         $monitor->setPhone($data['phone']);
         $monitor->setPhoto($data['photo']);
 
+        $errors = $this->validator->validate($monitor);
 
+        if (count($errors) > 0) {
+            $errorMessages = [];
+            foreach ($errors as $error) {
+                $errorMessages[] = $error->getMessage();
+            }
+            return $this->json(['errors' => $errorMessages], 400);
+        }
 
         $entityManager->flush();
 
