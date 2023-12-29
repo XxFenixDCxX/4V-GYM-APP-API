@@ -37,7 +37,7 @@ class MonitorController extends AbstractController
 
         return $this->getAll($entityManager);
     }
-
+    
     #[Route('/monitors/{id}', name: 'update_monitor', methods: ['PUT'])]
     public function update(Request $request, EntityManagerInterface $entityManager, int $id): JsonResponse
     {
@@ -58,21 +58,6 @@ class MonitorController extends AbstractController
 
         $entityManager->flush();
 
-        return $this->json($monitor->toArray());
-    }
-
-    #[Route('/monitors/{id}', name: 'delete_monitor', methods: ['DELETE'])]
-    public function delete(EntityManagerInterface $entityManager, int $id): JsonResponse
-    {
-        $monitor = $entityManager->getRepository(Monitor::class)->find($id);
-
-        if (!$monitor) {
-            throw $this->createNotFoundException('Monitor not found');
-        }
-
-        $entityManager->remove($monitor);
-        $entityManager->flush();
-
-        return $this->json(['message' => 'Monitor deleted']);
+        return $this->getAll($entityManager);
     }
 }
