@@ -97,4 +97,20 @@ class Activity
 
         return $this;
     }
+    public function toArray(): array
+    {
+        $monitorArray = [];
+    
+        foreach ($this->monitors as $monitor) {
+            $monitorArray[] = $monitor->toArray();
+        }
+    
+        return [
+            'id' => $this->id,
+            'activity_type' => $this->activity_type ? $this->activity_type->toArray() : null,
+            'monitors' => $monitorArray,
+            'date_start' => $this->date_start ? $this->date_start->format('Y-m-d H:i:s') : null,
+            'date_end' => $this->date_end ? $this->date_end->format('Y-m-d H:i:s') : null,
+        ];
+    }
 }
