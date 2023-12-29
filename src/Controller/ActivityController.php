@@ -212,4 +212,19 @@ class ActivityController extends AbstractController
 
         return $this->json($activity->toArray());
     }
+
+    #[Route('/activities/{id}', name: 'delete_activity', methods: ['DELETE'])]
+    public function delete($id, EntityManagerInterface $entityManager): JsonResponse
+    {
+        $activity = $entityManager->getRepository(Activity::class)->find($id);
+
+        if (!$activity) {
+            return $this->json(['error' => 'Actividad no encontrada.'], 404);
+        }
+
+        $entityManager->remove($activity);
+        $entityManager->flush();
+
+        return $this->json(['message' => 'Actividad eliminada con éxito.']);
+    }
 }

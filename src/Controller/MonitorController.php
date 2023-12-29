@@ -84,7 +84,7 @@ class MonitorController extends AbstractController
 
         $entityManager->flush();
 
-        return $this->getAll($entityManager);
+        return $this->json($monitor->toArray());
     }
     
 
@@ -94,12 +94,12 @@ class MonitorController extends AbstractController
         $monitor = $entityManager->getRepository(Monitor::class)->find($id);
 
         if (!$monitor) {
-            throw $this->createNotFoundException('Monitor not found');
+            throw $this->createNotFoundException('Monitor no encontrado');
         }
 
         $entityManager->remove($monitor);
         $entityManager->flush();
 
-        return $this->getAll($entityManager);
+        return $this->json(['message' => 'Monitor eliminado con éxito.']);
     }
 }
