@@ -60,4 +60,20 @@ class MonitorController extends AbstractController
 
         return $this->getAll($entityManager);
     }
+    
+
+    #[Route('/monitors/{id}', name: 'delete_monitor', methods: ['DELETE'])]
+    public function delete(EntityManagerInterface $entityManager, int $id): JsonResponse
+    {
+        $monitor = $entityManager->getRepository(Monitor::class)->find($id);
+
+        if (!$monitor) {
+            throw $this->createNotFoundException('Monitor not found');
+        }
+
+        $entityManager->remove($monitor);
+        $entityManager->flush();
+
+        return $this->getAll($entityManager);
+    }
 }
