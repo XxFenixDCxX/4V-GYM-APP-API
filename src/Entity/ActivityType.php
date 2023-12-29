@@ -87,4 +87,12 @@ class ActivityType
 
         return $this;
     }
+    public function toArray(): array
+    {
+        return [
+            'id' => $this->id,
+            'name' => $this->name,
+            'number_monitors' => $this->number_monitors,
+        ];
+    }
 }
