@@ -5,18 +5,39 @@ namespace App\Controller;
 use App\Entity\Activity;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Doctrine\ORM\EntityManagerInterface;
 
 class ActivityController extends AbstractController
 {
-    #[Route('/activitys', name: 'get_activity', methods: ['GET'])]
-    public function getAll(EntityManagerInterface $entityManager): JsonResponse
+    #[Route('/activities', name: 'get_activities', methods: ['GET'])]
+    public function getAll(Request $request, EntityManagerInterface $entityManager): JsonResponse
     {
-        $activitys = $entityManager->getRepository(Activity::class)->findAll();
+        $dateParameter = $request->query->get('date');
 
-        $activitysArray = array_map(fn ($activity) => $activity->toArray(), $activitys);
+        $activityRepository = $entityManager->getRepository(Activity::class);
 
-        return $this->json($activitysArray);
+        if ($dateParameter) {
+            // Si se proporciona el parámetro de fecha, intenta buscar actividades por esa fecha y hora
+            $dateTime = \DateTime::createFromFormat('Y-m-d H:i:s', $dateParameter . ' 00:00:00');
+
+            if (!$dateTime) {
+                return $this->json(['error' => 'Formato de fecha y hora no válido. Use Y-m-d H:i:s.'], 400);
+            }
+
+            $activities = $activityRepository->findBy(['date_start' => $dateTime]);
+        } else {
+            // Si no se proporciona el parámetro de fecha, obtén todas las actividades
+            $activities = $activityRepository->findAll();
+        }
+
+        $activitiesArray = [];
+
+        foreach ($activities as $activity) {
+            $activitiesArray[] = $activity->toArray();
+        }
+
+        return $this->json($activitiesArray);
     }
 }

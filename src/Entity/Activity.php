@@ -112,5 +112,5 @@ class Activity
             'date_start' => $this->date_start ? $this->date_start->format('Y-m-d H:i:s') : null,
             'date_end' => $this->date_end ? $this->date_end->format('Y-m-d H:i:s') : null,
         ];
-    }
+    }    
 }
